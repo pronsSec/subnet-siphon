@@ -21,7 +21,7 @@ Before running the tool, ensure you have Python installed on your system. The to
 1. **Clone the Repository**:
 
 - git clone https://github.com/pronsSec/subnet-siphon
-- cd ip-subnet-list-cleaner
+- cd subnet-siphon
 
 
 2. **Install Dependencies**:
@@ -33,7 +33,7 @@ Before running the tool, ensure you have Python installed on your system. The to
 
 Run the script from the command line, providing the path to your input file. You can also specify the paths for the output CSV and text files.
 
-- python script.py input_subnets.txt --output-csv cleaned_subnets.csv --output-txt cleaned_subnets.txt
+- python subnet-siphon.py input_subnets.txt --output-csv cleaned_subnets.csv --output-txt cleaned_subnets.txt
 
 
 ## Contributing
