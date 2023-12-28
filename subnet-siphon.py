@@ -2,9 +2,7 @@ import argparse
 import dask.dataframe as dd
 import ipaddress
 import pandas as pd
-from dask.distributed import Client
 from rich.console import Console
-from rich.progress import Progress, BarColumn, TimeRemainingColumn
 from rich.markdown import Markdown
 from rich.text import Text
 
@@ -55,23 +53,19 @@ def filter_subnets_globally(df):
     return pd.DataFrame({'subnet': filtered_subnets})
 
 def process_subnets(file_path, output_csv_path, output_txt_path):
+    console.log("[bold blue]Starting processing of subnets...")
+    
     df = dd.read_csv(file_path, header=None, names=['subnet'])
-    num_rows = df.shape[0].compute()  # Compute the total number of rows for progress tracking
 
-    with Progress("[progress.description]{task.description}", BarColumn(), "[progress.percentage]{task.percentage:>3.0f}%", TimeRemainingColumn(), console=console) as progress:
-        pre_processing_task = progress.add_task("[cyan]Pre-processing subnets...", total=num_rows)
-        meta_pre_process = {'subnet': object}
-        pre_processed_df = df.map_partitions(pre_process_subnets, meta=meta_pre_process)
-        progress.update(pre_processing_task, completed=num_rows)
+    console.log("[bold cyan]Pre-processing subnets...")
+    pre_processed_df = df.map_partitions(pre_process_subnets)
 
-        filtering_task = progress.add_task("[green]Filtering subnets within partitions...", total=num_rows)
-        meta_filter = pd.DataFrame({'subnet': pd.Series([], dtype=object)})
-        filtered_df = pre_processed_df.map_partitions(filter_subnets_within_partition, meta=meta_filter)
-        progress.update(filtering_task, completed=num_rows)
+    console.log("[bold green]Filtering subnets within partitions...")
+    meta_filter = {'subnet': object}  # Correct metadata definition
+    filtered_df = pre_processed_df.map_partitions(filter_subnets_within_partition, meta=meta_filter)
 
-        global_filtering_task = progress.add_task("[yellow]Applying global filtering...", total=num_rows)
-        final_df = filtered_df.compute().pipe(filter_subnets_globally)
-        progress.update(global_filtering_task, completed=num_rows)
+    console.log("[bold yellow]Applying global filtering...")
+    final_df = filtered_df.compute().pipe(filter_subnets_globally)
 
     console.log("[bold green]Writing output to CSV file...")
     final_df.to_csv(output_csv_path, index=False)
@@ -93,31 +87,25 @@ def main():
     console.print(ascii_art)
 
     description = Markdown("""
-    # Subnet Siphon
+    # IP Subnet List Cleaner
 
     This tool processes a list of IP subnets to remove more specific duplicates. 
     It takes a .txt file of IP subnets as input and outputs a cleaned list 
     with more specific subnets removed.
 
     ## Usage
-    Run the script with the input file path and optionally specify the output file path.
-    Example: `python subnet-siphon.py input_subnets.txt --output-csv cleaned_subnets.csv --output-txt cleaned_subnets.txt`
+    Run the script with the input file path and optionally specify the output file paths.
+    Example: `python script.py input_subnets.txt --output-csv cleaned_subnets.csv --output-txt cleaned_subnets.txt`
     """)
     console.print(description)
 
     if not validate_input_file(args.file_path):
         return
 
-    # Initialize Dask Client to optimize resource usage
-    client = Client(n_workers=4, threads_per_worker=2, memory_limit='10GB')
-    
     try:
-        console.log("[bold blue]Starting processing of subnets...")
         process_subnets(args.file_path, args.output_csv, args.output_txt)
     except Exception as e:
         console.log(f"[bold red]An error occurred: {e}")
-
-    client.close()
 
 if __name__ == "__main__":
     main()
