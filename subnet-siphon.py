@@ -93,7 +93,7 @@ def main():
     console.print(ascii_art)
 
     description = Markdown("""
-    # IP Subnet List Cleaner
+    # Subnet Siphon
 
     This tool processes a list of IP subnets to remove more specific duplicates. 
     It takes a .txt file of IP subnets as input and outputs a cleaned list 
@@ -101,7 +101,7 @@ def main():
 
     ## Usage
     Run the script with the input file path and optionally specify the output file path.
-    Example: `python script.py input_subnets.txt --output-csv cleaned_subnets.csv --output-txt cleaned_subnets.txt`
+    Example: `python subnet-siphon.py input_subnets.txt --output-csv cleaned_subnets.csv --output-txt cleaned_subnets.txt`
     """)
     console.print(description)
 
