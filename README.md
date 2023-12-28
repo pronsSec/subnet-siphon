@@ -1,5 +1,6 @@
 # subnet-siphon
 
+![DALL·E 2023-12-28 06 22 52 - A comic book style cover photo for a tool named 'Subnet-Siphon', written by 'been'  The image should feature a dynamic and stylized depiction of digit](https://github.com/pronsSec/subnet-siphon/assets/93559326/43596695-c838-4b59-8abb-ebaf3c2fed4d)
 
 
 Subnet-Siphon is a Python command-line tool designed to process large lists of IP subnets. It efficiently removes duplicates, specifically targeting more specific subnets in a list containing both general and specific subnet entries. Using advanced data handling via dask, this tool can efficiently handle large lists with little resource usage. Or with more resources it can work very powerfully and quickly.
