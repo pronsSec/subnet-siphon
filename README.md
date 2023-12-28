@@ -6,7 +6,7 @@ Subnet-Siphon is a Python command-line tool designed to process large lists of I
 
 ## Features
 
-- **Efficient Processing**: Capable of handling large lists containing millions of IP subnets due to advanced data pre and post processing. Dask is used to provided parallel processing and significant speed increases paired with less resource strain than purely python implementations.
+- **Efficient Processing**: Capable of handling large lists containing millions of IP subnets due to advanced data pre and post processing. Dask is used to provided advanced data handling and significant speed increases paired with less resource strain than purely python implementations.
 - **Duplicate Removal**: Removes more specific subnet entries when a general version of the same subnet exists in the list.
 - **Support for IPv4 and IPv6**: Handles both IPv4 and IPv6 subnet lists.
 - **Progress Tracking**: Provides detailed progress updates with an estimated time to completion for each step.
